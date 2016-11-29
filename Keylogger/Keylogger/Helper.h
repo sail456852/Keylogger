@@ -4,6 +4,7 @@
 #include <ctime>
 #include <string>
 #include <fstream>
+#include <sstream> 
 
 namespace Helper
 {
@@ -64,7 +65,6 @@ namespace Helper
 		return  s.str ();
 	}
 
-
 	void WriteAppLog (const std::string &s)
 	{
 		std::ofstream file ("AppLog.txt", std::ios::app);
@@ -72,9 +72,8 @@ namespace Helper
 
 	}
 
-
-
 }
+
 
 
 #endif // !HELPER_H
