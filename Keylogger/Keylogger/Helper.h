@@ -1,11 +1,11 @@
 #pragma once
+
 #ifndef HELPER_H
 #define HELPER_H
 #include <ctime>
 #include <string>
 #include <fstream>
 #include <sstream> 
-
 namespace Helper
 {
 	template <class T >
@@ -19,7 +19,7 @@ namespace Helper
 		{
 			time_t ms;
 			time (&ms);
-			tm *info = localtime (&ms);  // add struct before tm or not , it makes no sense . 
+			tm *info = localtime(&ms);  // add struct before tm or not , it makes no sense . 
 			D = info->tm_mday;
 			m = info->tm_mon + 1;
 			y = info->tm_year + 1900;

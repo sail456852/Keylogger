@@ -1,27 +1,25 @@
-#pragma once
-
+#pragma once 
 
 #include <thread>
 #include <chrono>
 
-class Timer
-{
-	std::thread Thread; 
-	bool Alive = false; 
-	long CallNumber = -1L; 
-	long repeat_count = -1L; 
-	std::chrono::milliseconds interval = std::chrono::milliseconds (0);
-	std::function<void (void)> funct = nullptr; 
+class Timer {
 
-	void SleepAndRun ()
-	{
+	//PRIVATE ATTRIBUTES AND METHODS
+	std::thread Thread; //thread for asynchronous execution
+	bool Alive = false; //is the process alive?
+	long CallNumber = -1L; //determines how many times to call a function
+	long repeat_count = -1L; //counts the amount of times a function has been called
+	std::chrono::milliseconds interval = std::chrono::milliseconds (0); //interval between function calls
+	std::function<void (void)> funct = nullptr; //a pointer to a function (initialized as null)
+
+	void SleepAndRun () {
 		std::this_thread::sleep_for (interval);
 		if (Alive)
-			Function()();
-	} 
+			Function ()();
+	}
 
-	void ThreadFunc ()
-	{
+	void ThreadFunc () {
 		if (CallNumber == Infinite)
 			while (Alive)
 				SleepAndRun ();
@@ -31,63 +29,54 @@ class Timer
 	}
 
 public:
-	static const long Infinite = -1L;    //This is actually defined later on 
-	
-	Timer () {}
-	Timer (const std::function<void(void)> &f ): funct (f){}  
+
+	//PUBLIC ATTRIBUTES
+	static const long Infinite = -1L;
+
+	Timer () {} //constructor for Time
+
+	Timer (const std::function<void (void)> &f) : funct (f) {}
 
 	Timer (const std::function<void (void)> &f,
-		const unsigned  long &i,
-		const long repeat = Timer::Infinite) :funct(f),
-		                          interval(std::chrono::milliseconds(i)),
-									  CallNumber(repeat) {}
+		const unsigned long &i, const long repeat = Timer::Infinite) : funct (f),
+		interval (std::chrono::milliseconds (i)), CallNumber (repeat) {}
 
-	void Start (bool Async = true)
-	{
+	//starts the timer
+	void Start (bool Async = true) {
 		if (IsAlive ())
-			return; 
+			return;
 		Alive = true;
-		repeat_count = CallNumber; 
-		if (Async)
-			Thread = std::thread(ThreadFunc, this);
+		repeat_count = CallNumber;
+		if (Async) 
+			Thread = std::thread(ThreadFunc, this); //Why is it wrong ?
 		else
-			this->ThreadFunc ();
+			this->ThreadFunc();
 	}
 
-	void Stop ()
-	{
-		Alive = false; 
-		Thread.join ();
+	//stops the timer
+	void Stop () {
+		Alive = false;
+		Thread.join (); //joins threads together to stop concurrent execution on main thread, stops timer
 	}
 
-	void SetFunction (const std::function<void (void)> &f)
-	{
-		funct = f; 
-	}
-
-	bool IsAlive () const { return Alive; }
-
-	void RepeatCount (const long r)
-	{
+	//GETTERS AND SETTERS
+	bool IsAlive () const { return Alive; } //getter
+	void RepeatCount (const long r) { //setter for number of repeats
 		if (Alive)
-			return; 
-		CallNumber = r; 
+			return;
+		CallNumber = r;
 	}
-
-	long GetLeftCount () const { return repeat_count; }
-	long RepeatCount () const { return CallNumber; }
-
-	void SetInterval (const unsigned long &i)
-	{
+	void SetFunction (const std::function<void (void)> &f) { funct = f; } //setter for functions
+	long GetLeftCount () const { return repeat_count; } //returns number of calls left
+	long RepeatCount () const { return CallNumber; } //returns number of repeats
+	void SetInterval (const unsigned long &i) { //sets interval value
 		if (Alive)
-			return; 
+			return;
 		interval = std::chrono::milliseconds (i);
 	}
+	unsigned long Interval () const { return interval.count (); } //gets interval value
+	const std::function<void (void)> &Function () const { return funct; } //gets funct
 
-	unsigned long Interval () const { return interval.count (); }
+}; //closing bracket of Timer class
 
-	const std::function<void (void)> &Function () const
-	{
-		return Function ();
-	}
-};
+
